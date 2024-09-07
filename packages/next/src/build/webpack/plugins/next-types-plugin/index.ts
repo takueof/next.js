@@ -164,7 +164,7 @@ if ('generateStaticParams' in entry) {
 
 type PageParams = any
 export interface PageProps {
-  params?: any
+  params?: Promise<{[param: string]: string | string[] | undefined}>
   searchParams?: Promise<any>
 }
 export interface LayoutProps {
