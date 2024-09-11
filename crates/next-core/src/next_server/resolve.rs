@@ -1,6 +1,6 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use turbo_tasks::{trace::TraceRawVcs, RcStr, Value, Vc};
+use turbo_tasks::{debug::ValueDebug, trace::TraceRawVcs, RcStr, Value, Vc};
 use turbo_tasks_fs::{self, glob::Glob, FileJsonContent, FileSystemPath};
 use turbopack_core::{
     issue::{Issue, IssueExt, IssueSeverity, IssueStage, OptionStyledString, StyledString},
@@ -426,11 +426,26 @@ impl AfterResolvePlugin for ExternalCjsModulesResolvePlugin {
             (FileType::EcmaScriptModule, false) => {
                 // even with require() this resolves to a ESM,
                 // which would break node.js, bundle it
+                println!(
+                    "{:?} {:?} {:?} {:?} {:?}",
+                    fs_path.await?.path,
+                    lookup_path.await?.path,
+                    reference_type.dbg().await?.await?,
+                    self.import_externals,
+                    request.dbg().await?
+                );
                 unable_to_externalize(
                     request_str.into(),
                     "The package seems invalid. require() resolves to a EcmaScript module, which \
                      would result in an error in Node.js.",
                 )
+                // Ok(ResolveResultOption::some(
+                //     ResolveResult::primary(ResolveResultItem::External(
+                //         request_str.into(),
+                //         ExternalType::EcmaScriptModule,
+                //     ))
+                //     .cell(),
+                // ))
             }
         }
     }
