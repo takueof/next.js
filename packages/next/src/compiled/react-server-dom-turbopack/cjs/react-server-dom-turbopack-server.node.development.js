@@ -3618,12 +3618,13 @@
     exports.registerClientReference = function (
       proxyImplementation,
       id,
-      exportName
+      exportName,
+      async
     ) {
       return registerClientReferenceImpl(
         proxyImplementation,
         id + "#" + exportName,
-        !1
+        async || false
       );
     };
     exports.registerServerReference = function (reference, id, exportName) {
