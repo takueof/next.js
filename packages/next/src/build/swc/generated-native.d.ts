@@ -1,4 +1,4 @@
-// This was manually added
+// Manual additions to make the generated types below work.
 
 import type { TurbopackResult } from './types'
 
@@ -17,7 +17,7 @@ export function lightningCssTransformStyleAttribute(
   args: object
 ): Promise<unknown>
 
-// Below are the generated types from napi
+// GENERATED-TYPES-BELOW
 
 /* tslint:disable */
 /* eslint-disable */
@@ -114,6 +114,8 @@ export interface NapiProjectOptions {
   buildId: string
   /** Options for draft mode. */
   previewProps: NapiDraftModeOptions
+  /** The browserslist query to use for targeting browsers. */
+  browserslistQuery: string
 }
 /** [NapiProjectOptions] with all fields optional. */
 export interface NapiPartialProjectOptions {
@@ -150,6 +152,8 @@ export interface NapiPartialProjectOptions {
   buildId?: string
   /** Options for draft mode. */
   previewProps?: NapiDraftModeOptions
+  /** The browserslist query to use for targeting browsers. */
+  browserslistQuery?: string
 }
 export interface NapiDefineEnv {
   client: Array<NapiEnvVar>

@@ -4,9 +4,10 @@ const {
   NEXT_DIR,
   booleanArg,
   execAsyncWithOutput,
+  execFn,
   namedValueArg,
 } = require('./pack-util.cjs')
-const { rmSync } = require('fs')
+const fs = require('fs')
 const path = require('path')
 
 const args = process.argv.slice(2)
@@ -38,11 +39,11 @@ module.exports = (async () => {
           .toString()
           .includes('the compiler unexpectedly panicked. this is a bug.')
       ) {
-        rmSync(path.join(targetDir, 'release/incremental'), {
+        fs.rmSync(path.join(targetDir, 'release/incremental'), {
           recursive: true,
           force: true,
         })
-        rmSync(path.join(targetDir, 'debug/incremental'), {
+        fs.rmSync(path.join(targetDir, 'debug/incremental'), {
           recursive: true,
           force: true,
         })
@@ -54,4 +55,29 @@ module.exports = (async () => {
     }
     break
   }
+
+  execFn(
+    'Copy generated types to `next/src/build/swc/generated-native.d.ts`',
+    () => writeTypes()
+  )
 })()
+
+function writeTypes() {
+  const generatedTypesPath = path.join(
+    NEXT_DIR,
+    'packages/next-swc/native/index.d.ts'
+  )
+  const vendoredTypesPath = path.join(
+    NEXT_DIR,
+    'packages/next/src/build/swc/generated-native.d.ts'
+  )
+  const generatedTypesMarker = '// GENERATED-TYPES-BELOW'
+
+  const generatedTypes = fs.readFileSync(generatedTypesPath, 'utf8')
+  let vendoredTypes = fs.readFileSync(vendoredTypesPath, 'utf8')
+
+  vendoredTypes = vendoredTypes.split(generatedTypesMarker)[0]
+  vendoredTypes = vendoredTypes + generatedTypesMarker + '\n\n' + generatedTypes
+
+  fs.writeFileSync(vendoredTypesPath, vendoredTypes)
+}
